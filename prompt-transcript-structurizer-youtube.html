@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор промпта для анализа транскрипции</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Добавляем стиль для лучшего рендеринга в Safari/Firefox */
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 md:p-8">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Промпт для структурирования видео</h1>
+            <p class="text-gray-500 mt-2">Скопируйте этот промпт и вставьте его вместе с вашей транскрипцией для анализа.</p>
+        </div>
+
+        <!-- Prompt container -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+            <pre id="prompt-text" class="whitespace-pre-wrap text-sm text-gray-700">
+<strong class="font-semibold text-gray-900">Роль:</strong> Ты — опытный редактор и аналитик контента, специализирующийся на структурировании информации. Твоя главная задача — превращать сплошной текст в четкое, логичное и понятное оглавление с тайм-кодами для YouTube.
+
+<strong class="font-semibold text-gray-900">Контекст:</strong> Я предоставляю тебе полную транскрипцию YouTube-видео. Важно: транскрипция должна содержать тайм-коды, чтобы ты мог привязать к ним логические блоки.
+
+<strong class="font-semibold text-gray-900">Задача:</strong>
+Проанализируй текст транскрипции и выполни следующие шаги:
+1.  **Определи логическую структуру:** Внимательно прочти текст, чтобы выявить ключевые тематические блоки. Раздели их на главные разделы и, при необходимости, на более мелкие подтемы.
+2.  **Создай иерархическое оглавление:** На основе выделенных разделов сформируй подробное оглавление видео с тайм-кодами, которое можно будет использовать в описании на YouTube.
+
+<strong class="font-semibold text-gray-900">Требования к формату вывода:</strong>
+-   **Иерархия:** Результат должен иметь четкую структуру "раздел -> подраздел". Главные разделы должны быть выделены (например, жирным шрифтом) и визуально отделены друг от друга пустой строкой. Подразделы должны иметь отступ для наглядности.
+-   **Тайм-коды:** Укажи начальное время для каждого блока в формате `ЧЧ:ММ:СС`. Этот формат должен быть одинаковым для всех тайм-кодов в оглавлении.
+-   **Выравнивание:** Тайм-код и заголовок должны находиться на одной строке. Все заголовки должны быть выровнены по одной вертикальной линии для лучшей читаемости.
+
+<strong class="font-semibold text-gray-900">Пример формата:</strong>
+
+**Оглавление видео "Всё о пептидах":**
+
+`00:00:00` **Введение: Что такое пептиды?**
+
+`00:01:45` **Как пептиды работают в организме?**
+    `00:02:10` - Механизм действия на клеточном уровне
+    `00:02:50` - Примеры взаимодействия с рецепторами
+
+`00:03:12` **Пептиды в косметологии и медицине**
+    `00:04:05` - Антивозрастные кремы
+    `00:04:40` - Терапевтическое применение
+
+`00:05:28` **Виды пептидов и их классификация**
+
+`00:07:55` **Заключение: Будущее пептидных технологий**
+
+---
+<strong class="font-semibold text-gray-900">Транскрипция для анализа:</strong>
+Транскрипция будет добавлена ниже.
+            </pre>
+        </div>
+
+        <!-- Copy button -->
+        <button id="copy-button" class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out transform hover:scale-105">
+            Копировать промпт
+        </button>
+    </div>
+
+    <script>
+        const copyButton = document.getElementById('copy-button');
+        const promptTextElement = document.getElementById('prompt-text');
+
+        copyButton.addEventListener('click', () => {
+            // Используем innerText, чтобы сохранить форматирование (отступы и переносы строк) из <pre>
+            const textToCopy = promptTextElement.innerText;
+            
+            const textArea = document.createElement('textarea');
+            // Стилизуем textarea, чтобы она была невидима
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                copyButton.textContent = 'Скопировано!';
+                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                copyButton.classList.add('bg-green-500');
+            } catch (err) {
+                console.error('Не удалось скопировать текст: ', err);
+                copyButton.textContent = 'Ошибка';
+                copyButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                copyButton.classList.add('bg-red-500');
+            }
+            document.body.removeChild(textArea);
+
+            setTimeout(() => {
+                copyButton.textContent = 'Копировать промпт';
+                copyButton.classList.remove('bg-green-500', 'bg-red-500');
+                copyButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }, 2000);
+        });
+    </script>
+
+</body>
+</html>
