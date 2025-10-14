@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менеджер промптов для проверки документа</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .prompt-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            user-select: text;
+        }
+        .tab-btn.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
+    <div class="w-full max-w-4xl bg-white rounded-xl shadow-lg">
+        <!-- Navigation -->
+        <div class="border-b border-gray-200">
+            <nav class="flex -mb-px p-4" aria-label="Tabs">
+                <button id="tab-btn-1" class="tab-btn active w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                    Промпт 1: Проверка документа
+                </button>
+                <button id="tab-btn-2" class="tab-btn w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors duration-200">
+                    Промпт 2: Внесение исправлений
+                </button>
+            </nav>
+        </div>
+
+        <div class="p-6 sm:p-8">
+            <!-- Tab 1 Content -->
+            <div id="tab-content-1" class="tab-content active">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Промпт для проверки</h1>
+                    <button class="copy-button flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        <span class="copy-text">Копировать</span>
+                    </button>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <pre class="prompt-text text-gray-700 text-base leading-relaxed">
+<strong class="font-semibold text-gray-900">Роль:</strong> Ты — опытный редактор и корректор, специализирующийся на вычитке документов после оптического распознавания символов (OCR).
+
+<strong class="font-semibold text-gray-900">Задача:</strong> Внимательно проанализируй предоставленный ниже текст, который был распознан с помощью FineReader и сконвертирован в Word. Твоя цель — выявить и исправить ошибки, возникшие в процессе распознавания, с особым вниманием к стилистике, структуре и аббревиатурам.
+
+<strong class="font-semibold text-gray-900">Контекст и тематика документа:</strong> Комплексный обзор и исследование пептидов.
+
+<strong class="font-semibold text-gray-900">Инструкции по проверке:</strong>
+
+<strong class="font-medium text-gray-800">1. Стилистический анализ:</strong>
+    * Проверь текст на наличие стилистических и речевых ошибок.
+    * Предложи улучшения для повышения читаемости, ясности и логической связности текста.
+
+<strong class="font-medium text-gray-800">2. Проверка структуры (нумерация и списки):</strong>
+    * Проверь всю нумерацию в документе. Убедись, что последовательность нигде не нарушена.
+    * Проанализируй все вложенные и маркированные списки. Проверь правильность их форматирования и иерархии.
+
+<strong class="font-medium text-gray-800">3. Ключевая проверка: Аббревиатуры:</strong>
+    * <strong class="font-semibold">Основная проблема:</strong> В тексте могут содержаться английские аббревиатуры, которые FineReader мог ошибочно распознать, используя похожие по начертанию русские буквы.
+    * <strong class="font-semibold">Твои действия:</strong> Исправь все некорректно распознанные аббревиатуры, сверяясь с контекстом.
+
+<strong class="font-semibold text-gray-900">Формат вывода:</strong>
+Предоставь свой ответ в формате списка предлагаемых исправлений.
+
+* <strong class="font-semibold">Аббревиатуры:</strong>
+    * Составь таблицу или список всех найденных и исправленных аббревиатур.
+        * **Неправильный вариант:** [например, `ВРС-157`]
+        * **Правильный вариант:** [например, `BPC-157`]
+        * **Пояснение:** [например, "Распознаны русские буквы 'В', 'Р' и 'С' вместо латинских 'B', 'P' и 'C'."]
+
+<strong class="font-semibold text-gray-900">Текст для проверки загружен в формате файла Microsoft Word.</strong></pre>
+                </div>
+            </div>
+
+            <!-- Tab 2 Content -->
+            <div id="tab-content-2" class="tab-content">
+                 <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Промпт для исправлений</h1>
+                    <button class="copy-button flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ease-in-out">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        <span class="copy-text">Копировать</span>
+                    </button>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <pre class="prompt-text text-gray-700 text-base leading-relaxed">
+<strong class="font-semibold text-gray-900">Роль:</strong> Ты — внимательный ассистент-корректор.
+
+<strong class="font-semibold text-gray-900">Задача:</strong> Взяв за основу исходный документ и сгенерированный тобой на предыдущем шаге список исправлений, аккуратно примени все правки, создав финальную версию текста.
+
+<strong class="font-semibold text-gray-900">Ключевые правила:</strong>
+
+<strong class="font-semibold text-green-600">1. Сохранение форматирования (ВАЖНО!):</strong>
+При внесении исправлений **полностью сохрани исходное форматирование документа**. Заголовки, абзацы, списки, выделение жирным шрифтом или курсивом, подпункты и любая другая структура должны остаться без изменений. Единственное исключение — если предложенное исправление касается непосредственно ошибки в структуре (например, неправильная нумерация списка).
+
+<strong class="font-semibold text-red-600">2. Только предложенные правки:</strong>
+Строго запрещено вносить любые другие изменения, кроме тех, что явно указаны в списке. Не улучшай, не добавляй и не сокращай текст. Твоя задача — точно применить коррекции.
+
+<strong class="font-semibold text-gray-900">Формат вывода:</strong>
+Отобрази итоговый, полностью исправленный и отформатированный текст в формате Markdown прямо в canvas для последующего редактирования.
+</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const copyButtons = document.querySelectorAll('.copy-button');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabNumber = button.id.split('-')[2];
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`tab-content-${tabNumber}`).classList.add('active');
+            });
+        });
+
+        copyButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const parentTab = e.currentTarget.closest('.tab-content');
+                const promptTextElement = parentTab.querySelector('.prompt-text');
+                const copyTextSpan = e.currentTarget.querySelector('.copy-text');
+                
+                const textToCopy = promptTextElement.textContent.trim();
+
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        copyTextSpan.textContent = 'Скопировано!';
+                        e.currentTarget.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        e.currentTarget.classList.add('bg-green-500');
+
+                        setTimeout(() => {
+                            copyTextSpan.textContent = 'Копировать';
+                            e.currentTarget.classList.remove('bg-green-500');
+                            e.currentTarget.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        }, 2000);
+                    } else {
+                        copyTextSpan.textContent = 'Ошибка';
+                    }
+                } catch (err) {
+                    console.error('Ошибка при копировании: ', err);
+                    copyTextSpan.textContent = 'Ошибка';
+                }
+
+                document.body.removeChild(textArea);
+            });
+        });
+    </script>
+</body>
+</html>
+
