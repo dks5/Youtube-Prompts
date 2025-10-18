@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция по скачиванию видео с VK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #d1d5db;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .input-field {
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            color: #e5e7eb;
+        }
+        .btn {
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+        pre {
+            background-color: #1f2937;
+            border: 1px solid #4b5563;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Изменены отступы для лучшего отображения на мобильных устройствах -->
+    <div class="container w-full mx-auto bg-gray-900 rounded-2xl shadow-lg p-6 sm:p-8">
+        <div class="text-center mb-8">
+            <!-- Адаптивный размер заголовка -->
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Интерактивная инструкция по скачиванию видео с VK</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">Эта страница поможет вам создать готовую команду для скачивания видео с VK (ВКонтакте) с помощью PowerShell. Не нужно устанавливать сложные программы — просто настройте параметры, скопируйте команду и выполните её.</p>
+        </div>
+
+        <!-- Поля для ввода -->
+        <div class="space-y-6">
+            <div>
+                <label for="appPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 1: Укажите путь для утилиты yt-dlp.exe</label>
+                <input type="text" id="appPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Downloads">
+                <p class="text-xs text-gray-500 mt-1">Это папка, куда будет скачана сама программа для загрузки. Рекомендуем оставить по умолчанию.</p>
+            </div>
+            <div>
+                <label for="videoPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 2: Укажите путь для сохранения видео</label>
+                <input type="text" id="videoPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Videos">
+                 <p class="text-xs text-gray-500 mt-1">Папка, куда будут сохраняться скачанные видеофайлы.</p>
+            </div>
+            <div>
+                <label for="videoUrlInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 3: Вставьте URL видео</label>
+                <input type="text" id="videoUrlInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="https://vkvideo.ru/video-173445146_456239065">
+                <p class="text-xs text-gray-500 mt-1">Ссылка на видео из VK, которое вы хотите скачать.</p>
+            </div>
+        </div>
+
+        <!-- Кнопка генерации -->
+        <div class="mt-8 text-center">
+             <!-- Адаптивные размеры кнопки -->
+            <button id="generateBtn" class="btn btn-primary text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-md">
+                Создать команду
+            </button>
+        </div>
+
+        <!-- Область вывода скрипта -->
+        <div id="output-container" class="mt-8 hidden">
+             <div class="flex justify-between items-center mb-2">
+                <h2 class="text-lg sm:text-xl font-semibold text-white">Ваша готовая команда:</h2>
+                <button id="copyBtn" class="btn btn-secondary text-white font-semibold py-2 px-4 rounded-lg text-sm">
+                    Копировать
+                </button>
+             </div>
+            <pre class="rounded-lg p-4 text-sm"><code id="scriptOutput" class="language-powershell"></code></pre>
+            <p class="text-xs text-gray-500 mt-2">Скопируйте этот код, вставьте в окно PowerShell (можно найти через меню "Пуск") и нажмите Enter.</p>
+        </div>
+    </div>
+
+    <script>
+        const appPathInput = document.getElementById('appPathInput');
+        const videoPathInput = document.getElementById('videoPathInput');
+        const videoUrlInput = document.getElementById('videoUrlInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const scriptOutput = document.getElementById('scriptOutput');
+        const outputContainer = document.getElementById('output-container');
+
+        const scriptTemplate = `# --- НАСТРОЙКИ ---
+$appInstallPath = "{{appInstallPath}}"
+$videoDownloadPath = "{{videoDownloadPath}}"
+$videoUrl = "{{videoUrl}}"
+
+# --- ИСПОЛНЕНИЕ СКРИПТА ---
+Write-Host "Проверка целевых папок..." -ForegroundColor Green
+if (-not (Test-Path -Path $appInstallPath)) { Write-Host "Создаю папку для приложения: $appInstallPath"; New-Item -ItemType Directory -Path $appInstallPath | Out-Null }
+if (-not (Test-Path -Path $videoDownloadPath)) { Write-Host "Создаю папку для видео: $videoDownloadPath"; New-Item -ItemType Directory -Path $videoDownloadPath | Out-Null }
+
+$ytDlpFullPath = Join-Path -Path $appInstallPath -ChildPath "yt-dlp.exe"
+$ytDlpUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
+
+if (-not (Test-Path -Path $ytDlpFullPath)) {
+    Write-Host "yt-dlp.exe не найден. Начинаю скачивание в '$appInstallPath'..." -ForegroundColor Yellow
+    Invoke-WebRequest -Uri $ytDlpUrl -OutFile $ytDlpFullPath
+    Write-Host "Скачивание yt-dlp.exe успешно завершено." -ForegroundColor Green
+} else {
+    Write-Host "yt-dlp.exe уже существует. Скачивание пропущено." -ForegroundColor Cyan
+}
+
+Write-Host "--------------------------------------------------------"
+Write-Host "Начинаю скачивание видео: $videoUrl" -ForegroundColor Cyan
+Write-Host "Видео будет сохранено в: $videoDownloadPath" -ForegroundColor Cyan
+Write-Host "--------------------------------------------------------"
+
+& $ytDlpFullPath -P $videoDownloadPath $videoUrl
+
+Write-Host "--------------------------------------------------------"
+Write-Host "Готово! Проверьте файл в папке '$videoDownloadPath'." -ForegroundColor Green
+`;
+
+        function generateScript() {
+            // Используем значения по умолчанию, если поля пустые
+            const appPath = appPathInput.value.trim() || "$HOME\\Downloads";
+            const videoPath = videoPathInput.value.trim() || "$HOME\\Videos";
+            const videoUrl = videoUrlInput.value.trim() || "https://vkvideo.ru/video-173445146_456239065";
+
+            const generatedScript = scriptTemplate
+                .replace('{{appInstallPath}}', appPath)
+                .replace('{{videoDownloadPath}}', videoPath)
+                .replace('{{videoUrl}}', videoUrl);
+
+            scriptOutput.textContent = generatedScript;
+            outputContainer.classList.remove('hidden');
+        }
+        
+        generateBtn.addEventListener('click', generateScript);
+
+        copyBtn.addEventListener('click', () => {
+            const textarea = document.createElement('textarea');
+            textarea.value = scriptOutput.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                copyBtn.textContent = 'Скопировано!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Копировать';
+                }, 2000);
+            } catch (err) {
+                console.error('Не удалось скопировать текст: ', err);
+            }
+            document.body.removeChild(textarea);
+        });
+
+        // Генерируем команду с данными по умолчанию при первой загрузке
+        generateScript();
+
+    </script>
+</body>
+</html>
+
