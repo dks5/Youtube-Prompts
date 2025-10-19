@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция по скачиванию видео и аудио с VK</title>
+    <title>Инструкция по скачиванию и удалению утилит для VK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -32,6 +32,12 @@
         .btn-primary:hover {
             background-color: #2563eb;
         }
+        .btn-danger {
+            background-color: #ef4444;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
         .btn-secondary {
             background-color: #4b5563;
         }
@@ -57,69 +63,146 @@
             color: white;
             border-color: #60a5fa;
         }
+        .tab-button {
+            border-color: transparent;
+            transition: all 0.2s;
+        }
+        .tab-button.active {
+            border-color: #3b82f6;
+            color: #ffffff;
+            background-color: #1f2937;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
     <div class="container w-full mx-auto bg-gray-900 rounded-2xl shadow-lg p-6 sm:p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Инструкция по скачиванию видео и аудио с VK</h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Эта страница поможет вам создать готовую команду для скачивания медиафайлов с VK (ВКонтакте) с помощью PowerShell. Просто настройте параметры ниже.</p>
+        
+        <!-- Навигация по вкладкам -->
+        <div class="mb-8 border-b border-gray-700">
+            <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                <button id="tab-btn-download" class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-400">
+                    Скачивание
+                </button>
+                <button id="tab-btn-uninstall" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-400">
+                    Удаление
+                </button>
+            </nav>
         </div>
 
-        <div class="space-y-6">
-            <div>
-                <label for="appPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 1: Путь для утилит (yt-dlp и FFmpeg)</label>
-                <input type="text" id="appPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Downloads">
+        <!-- Контент вкладок -->
+        <div id="tab-content-download">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Скачивание видео и аудио с VK</h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">Эта страница поможет вам создать готовую команду для скачивания медиафайлов с VK с помощью PowerShell.</p>
             </div>
-            <div>
-                <label for="videoPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 2: Путь для сохранения файла</label>
-                <input type="text" id="videoPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Videos">
-            </div>
-            <div>
-                <label for="videoUrlInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 3: URL медиафайла</label>
-                <input type="text" id="videoUrlInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="https://vkvideo.ru/video-173445146_456239065">
-            </div>
-            <div>
-                <label class="block mb-2 text-sm font-medium text-gray-300">Шаг 4: Выберите формат</label>
-                <div class="flex justify-center space-x-4 mt-2">
-                    <div class="flex items-center">
-                        <input type="radio" id="formatVideo" name="downloadFormat" value="video" class="hidden" checked>
-                        <label for="formatVideo" class="radio-label font-medium">Видео (MP4)</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="radio" id="formatAudio" name="downloadFormat" value="audio" class="hidden">
-                        <label for="formatAudio" class="radio-label font-medium">Аудио (MP3)</label>
+
+            <div class="space-y-6">
+                <div>
+                    <label for="appPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 1: Путь для утилит (yt-dlp и FFmpeg)</label>
+                    <input type="text" id="appPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Downloads\VK_Tools">
+                </div>
+                <div>
+                    <label for="videoPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 2: Путь для сохранения файла</label>
+                    <input type="text" id="videoPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Videos\VK_Downloads">
+                </div>
+                <div>
+                    <label for="videoUrlInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 3: URL медиафайла</label>
+                    <input type="text" id="videoUrlInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="https://vkvideo.ru/video-173445146_456239065">
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Шаг 4: Выберите формат</label>
+                    <div class="flex justify-center space-x-4 mt-2">
+                        <input type="radio" id="formatVideo" name="downloadFormat" value="video" class="hidden" checked><label for="formatVideo" class="radio-label font-medium">Видео (MP4)</label>
+                        <input type="radio" id="formatAudio" name="downloadFormat" value="audio" class="hidden"><label for="formatAudio" class="radio-label font-medium">Аудио (MP3)</label>
                     </div>
                 </div>
+                <div id="ffmpeg-note" class="hidden text-center bg-gray-800 p-3 rounded-lg"><p class="text-xs text-gray-400"><strong>Примечание:</strong> Для извлечения аудио в MP3 требуется <strong>FFmpeg</strong>. Скрипт автоматически скачает его.</p></div>
             </div>
-             <div id="ffmpeg-note" class="hidden text-center bg-gray-800 p-3 rounded-lg">
-                <p class="text-xs text-gray-400">
-                    <strong>Примечание:</strong> Для извлечения аудио в MP3 требуется дополнительная утилита <strong>FFmpeg</strong>.
-                    Скрипт автоматически скачает и настроит её, если она не установлена.
-                </p>
+
+            <div class="mt-8 text-center">
+                <button id="generateBtn" class="btn btn-primary text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-md">Создать команду</button>
+            </div>
+
+            <div id="output-container" class="mt-8 hidden">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-white">Ваша готовая команда:</h2>
+                    <button id="copyBtn" class="btn btn-secondary text-white font-semibold py-2 px-4 rounded-lg text-sm">Копировать</button>
+                </div>
+                <pre class="rounded-lg p-4 text-sm"><code id="scriptOutput" class="language-powershell"></code></pre>
+                <p class="text-xs text-gray-500 mt-2">Скопируйте этот код, вставьте в окно PowerShell и нажмите Enter.</p>
             </div>
         </div>
 
-        <div class="mt-8 text-center">
-            <button id="generateBtn" class="btn btn-primary text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-md">
-                Создать команду
-            </button>
+        <div id="tab-content-uninstall" class="hidden">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Удаление утилит и следов</h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">Этот раздел поможет создать скрипт для полного удаления скачанных утилит и папок.</p>
+            </div>
+            
+            <div class="bg-red-900/30 border border-red-700 text-red-300 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                <strong class="font-bold">Внимание!</strong>
+                <span class="block sm:inline">Скрипт необратимо удалит указанные папки и всё их содержимое.</span>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label for="uninstallAppPathInput" class="block mb-2 text-sm font-medium text-gray-300">Путь, где установлены утилиты (папка для удаления)</label>
+                    <input type="text" id="uninstallAppPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="$HOME\Downloads\VK_Tools">
+                </div>
+                <div class="flex items-center">
+                    <input id="deleteDownloadsCheckbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2">
+                    <label for="deleteDownloadsCheckbox" class="ml-2 text-sm font-medium text-gray-300">Также удалить папку со скачанными медиафайлами</label>
+                </div>
+                 <div id="uninstall-download-path-container" class="hidden">
+                    <label for="uninstallDownloadPathInput" class="block mb-2 text-sm font-medium text-gray-300">Путь для сохранения файла (папка для удаления)</label>
+                    <input type="text" id="uninstallDownloadPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="$HOME\Videos\VK_Downloads">
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <button id="generateUninstallBtn" class="btn btn-danger text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-md">Создать скрипт удаления</button>
+            </div>
+
+            <div id="uninstall-output-container" class="mt-8 hidden">
+                 <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-white">Скрипт для удаления:</h2>
+                    <button id="copyUninstallBtn" class="btn btn-secondary text-white font-semibold py-2 px-4 rounded-lg text-sm">Копировать</button>
+                </div>
+                <pre class="rounded-lg p-4 text-sm"><code id="uninstallScriptOutput" class="language-powershell"></code></pre>
+                 <p class="text-xs text-gray-500 mt-2">Вставьте этот код в PowerShell, чтобы удалить утилиты.</p>
+            </div>
+
         </div>
 
-        <div id="output-container" class="mt-8 hidden">
-             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-lg sm:text-xl font-semibold text-white">Ваша готовая команда:</h2>
-                <button id="copyBtn" class="btn btn-secondary text-white font-semibold py-2 px-4 rounded-lg text-sm">
-                    Копировать
-                </button>
-             </div>
-            <pre class="rounded-lg p-4 text-sm"><code id="scriptOutput" class="language-powershell"></code></pre>
-            <p class="text-xs text-gray-500 mt-2">Скопируйте этот код, вставьте в окно PowerShell и нажмите Enter.</p>
-        </div>
     </div>
 
     <script>
+        // --- ОБЩИЕ ЭЛЕМЕНТЫ И ЛОГИКА ВКЛАДОК ---
+        const tabs = {
+            download: {
+                btn: document.getElementById('tab-btn-download'),
+                content: document.getElementById('tab-content-download')
+            },
+            uninstall: {
+                btn: document.getElementById('tab-btn-uninstall'),
+                content: document.getElementById('tab-content-uninstall')
+            }
+        };
+
+        function switchTab(tabName) {
+            Object.values(tabs).forEach(tab => {
+                tab.btn.classList.remove('active');
+                tab.content.classList.add('hidden');
+            });
+            tabs[tabName].btn.classList.add('active');
+            tabs[tabName].content.classList.remove('hidden');
+        }
+
+        tabs.download.btn.addEventListener('click', () => switchTab('download'));
+        tabs.uninstall.btn.addEventListener('click', () => switchTab('uninstall'));
+
+        // --- ЛОГИКА ВКЛАДКИ СКАЧИВАНИЯ ---
         const appPathInput = document.getElementById('appPathInput');
         const videoPathInput = document.getElementById('videoPathInput');
         const videoUrlInput = document.getElementById('videoUrlInput');
@@ -130,165 +213,188 @@
         const formatRadios = document.querySelectorAll('input[name="downloadFormat"]');
         const ffmpegNote = document.getElementById('ffmpeg-note');
 
-        const scriptTemplate = `# --- УЛУЧШЕННАЯ ФУНКЦИЯ ДЛЯ СКАЧИВАНИЯ С ПРОГРЕСС-БАРОМ ---
+        const downloadScriptTemplate = `# --- УЛУЧШЕННАЯ ФУНКЦИЯ ДЛЯ СКАЧИВАНИЯ С ТЕКСТОВЫМ ПРОГРЕСС-БАРОМ ---
 function Start-CustomDownload {
-    param(
-        [string]$Uri,
-        [string]$OutFile
-    )
-    
+    param([string]$Uri, [string]$OutFile)
     $webClient = New-Object System.Net.WebClient
-    
     $scriptBlock = {
         param($sender, $e)
-        
+        $barWidth = [math]::Floor($Host.UI.RawUI.WindowSize.Width * 0.5)
+        if ($barWidth -lt 20) { $barWidth = 20 }
+        $percent = $e.ProgressPercentage
+        $filled = [math]::Round($barWidth * $percent / 100)
+        $empty = $barWidth - $filled
+        $bar = ('█' * $filled) + ('░' * $empty)
         $totalMB = if ($e.TotalBytesToReceive -gt 0) { [math]::Round($e.TotalBytesToReceive / 1MB, 2) } else { 0 }
         $receivedMB = [math]::Round($e.BytesReceived / 1MB, 2)
-        $remainingMB = if ($totalMB -gt 0) { $totalMB - $receivedMB } else { 0 }
-        
-        $status = "Скачано {0:N2} MB / {1:N2} MB (Осталось: {2:N2} MB)" -f $receivedMB, $totalMB, $remainingMB
-        
-        Write-Progress -Activity "Скачивание $(Split-Path $OutFile -Leaf)" -Status $status -PercentComplete $e.ProgressPercentage
+        $progressText = "\`r$bar $percent% ({0:N2} MB / {1:N2} MB)" -f $receivedMB, $totalMB
+        Write-Host $progressText -NoNewline
     }
-    
     $webClient.add_DownloadProgressChanged($scriptBlock)
-    
-    try {
+    try { 
         $webClient.DownloadFile($Uri, $OutFile)
-        Write-Progress -Activity "Скачивание $(Split-Path $OutFile -Leaf)" -Completed
-    } catch {
-        Write-Error "Ошибка при скачивании файла: $_"
-    } finally {
-        $webClient.Dispose()
+        Write-Host "" # Переход на новую строку после завершения
+    } catch { 
+        Write-Host ""
+        Write-Error "Ошибка при скачивании файла: $_" 
+    } finally { 
+        $webClient.Dispose() 
     }
 }
-
 # --- НАСТРОЙКИ ---
 $appInstallPath = "{{appInstallPath}}"
 $downloadPath = "{{downloadPath}}"
 $mediaUrl = "{{mediaUrl}}"
-
 # --- ИСПОЛНЕНИЕ СКРИПТА ---
-# 1. Проверка и создание папок
 Write-Host "Проверка целевых папок..." -ForegroundColor Green
 if (-not (Test-Path -Path $appInstallPath)) { Write-Host "Создаю папку для утилит: $appInstallPath"; New-Item -ItemType Directory -Path $appInstallPath | Out-Null }
 if (-not (Test-Path -Path $downloadPath)) { Write-Host "Создаю папку для медиа: $downloadPath"; New-Item -ItemType Directory -Path $downloadPath | Out-Null }
-
-# 2. Установка yt-dlp
 $ytDlpFullPath = Join-Path -Path $appInstallPath -ChildPath "yt-dlp.exe"
 if (-not (Test-Path -Path $ytDlpFullPath)) {
     Write-Host "yt-dlp.exe не найден. Начинаю скачивание..." -ForegroundColor Yellow
     Start-CustomDownload -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile $ytDlpFullPath
     Write-Host "Скачивание yt-dlp.exe успешно завершено." -ForegroundColor Green
-} else {
-    Write-Host "yt-dlp.exe уже существует. Скачивание пропущено." -ForegroundColor Cyan
-}
-
-# 3. Установка FFmpeg (если нужно)
+} else { Write-Host "yt-dlp.exe уже существует." -ForegroundColor Cyan }
 {{ffmpegSetup}}
-
-# 4. Скачивание медиафайла
-Write-Host "--------------------------------------------------------"
+Write-Host "---"
 Write-Host "Начинаю скачивание: $mediaUrl" -ForegroundColor Cyan
 Write-Host "Файл будет сохранен в: $downloadPath" -ForegroundColor Cyan
-Write-Host "--------------------------------------------------------"
-
+Write-Host "---"
+Write-Host "Запускаю yt-dlp.exe. Следующий индикатор прогресса генерируется этой утилитой:" -ForegroundColor Magenta
 {{commandLine}}
-
-Write-Host "--------------------------------------------------------"
-Write-Host "Готово! Проверьте файл (mp4 или mp3) в папке '$downloadPath'." -ForegroundColor Green
-`;
+Write-Host "---"
+Write-Host "Готово! Проверьте файл в папке '$downloadPath'." -ForegroundColor Green
+Write-Host "" # Добавляем пустую строку в конце для чистого завершения`;
 
         const ffmpegTemplate = `
 $ffmpegFullPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg.exe"
 if (-not (Test-Path -Path $ffmpegFullPath)) {
-    Write-Host "FFmpeg не найден. Он необходим для конвертации в MP3." -ForegroundColor Yellow
-    Write-Host "Начинаю автоматическую установку FFmpeg..." -ForegroundColor Yellow
-    
+    Write-Host "FFmpeg не найден. Начинаю автоматическую установку..." -ForegroundColor Yellow
     $ffmpegZipUrl = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
     $ffmpegZipPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg.zip"
-    Write-Host "Скачиваю FFmpeg с $ffmpegZipUrl..."
     Start-CustomDownload -Uri $ffmpegZipUrl -OutFile $ffmpegZipPath
-    
     $ffmpegExtractPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg_extracted"
     Write-Host "Распаковываю архив..."
     Expand-Archive -Path $ffmpegZipPath -DestinationPath $ffmpegExtractPath -Force
-    
-    $binPath = (Get-ChildItem -Path $ffmpegExtractPath -Directory).FullName | Select-Object -First 1
-    $binPath = Join-Path -Path $binPath -ChildPath "bin"
-    Write-Host "Перемещаю ffmpeg.exe и ffprobe.exe в $appInstallPath..."
+    $binPath = (Get-ChildItem -Path $ffmpegExtractPath -Directory).FullName | Select-Object -First 1 | Join-Path -ChildPath "bin"
     Get-ChildItem -Path $binPath -Filter *.exe | Move-Item -Destination $appInstallPath
-    
     Write-Host "Очистка временных файлов..."
-    Remove-Item -Path $ffmpegZipPath -Force
-    Remove-Item -Path $ffmpegExtractPath -Recurse -Force
-    
-    Write-Host "Установка FFmpeg успешно завершена." -ForegroundColor Green
-} else {
-    Write-Host "FFmpeg уже существует. Установка пропущена." -ForegroundColor Cyan
-}
-`;
+    Remove-Item -Path $ffmpegZipPath -Force; Remove-Item -Path $ffmpegExtractPath -Recurse -Force
+    Write-Host "Установка FFmpeg завершена." -ForegroundColor Green
+} else { Write-Host "FFmpeg уже существует." -ForegroundColor Cyan }`;
         
-        function generateScript() {
-            const appPath = appPathInput.value.trim() || "$HOME\\Downloads";
-            const downloadPath = videoPathInput.value.trim() || "$HOME\\Videos";
+        function generateDownloadScript() {
+            const appPath = appPathInput.value.trim() || "$HOME\\Downloads\\VK_Tools";
+            const downloadPath = videoPathInput.value.trim() || "$HOME\\Videos\\VK_Downloads";
             const mediaUrl = videoUrlInput.value.trim() || "https://vkvideo.ru/video-173445146_456239065";
             const selectedFormat = document.querySelector('input[name="downloadFormat"]:checked').value;
-
-            let commandLine = '';
-            let ffmpegSetup = '';
-            
-            if (selectedFormat === 'audio') {
-                ffmpegSetup = ffmpegTemplate;
-                commandLine = `& $ytDlpFullPath -x --audio-format mp3 -P $downloadPath $mediaUrl`;
-            } else {
-                commandLine = `& $ytDlpFullPath -P $downloadPath $mediaUrl`;
-            }
-
-            const generatedScript = scriptTemplate
+            let commandLine = selectedFormat === 'audio' ? `& $ytDlpFullPath --progress -x --audio-format mp3 -P $downloadPath $mediaUrl` : `& $ytDlpFullPath --progress -P $downloadPath $mediaUrl`;
+            const generatedScript = downloadScriptTemplate
                 .replace('{{appInstallPath}}', appPath)
                 .replace('{{downloadPath}}', downloadPath)
                 .replace('{{mediaUrl}}', mediaUrl)
-                .replace('{{ffmpegSetup}}', ffmpegSetup)
+                .replace('{{ffmpegSetup}}', selectedFormat === 'audio' ? ffmpegTemplate : '')
                 .replace('{{commandLine}}', commandLine);
-
             scriptOutput.textContent = generatedScript;
             outputContainer.classList.remove('hidden');
         }
         
         function handleFormatChange() {
-            const selectedFormat = document.querySelector('input[name="downloadFormat"]:checked').value;
-            if (selectedFormat === 'audio') {
-                ffmpegNote.classList.remove('hidden');
-            } else {
-                ffmpegNote.classList.add('hidden');
-            }
-            generateScript();
+            ffmpegNote.classList.toggle('hidden', document.querySelector('input[name="downloadFormat"]:checked').value !== 'audio');
+            generateDownloadScript();
         }
 
-        generateBtn.addEventListener('click', generateScript);
+        generateBtn.addEventListener('click', generateDownloadScript);
         formatRadios.forEach(radio => radio.addEventListener('change', handleFormatChange));
+        copyBtn.addEventListener('click', () => copyToClipboard(scriptOutput.textContent, copyBtn));
 
-        copyBtn.addEventListener('click', () => {
+        // --- ЛОГИКА ВКЛАДКИ УДАЛЕНИЯ ---
+        const uninstallAppPathInput = document.getElementById('uninstallAppPathInput');
+        const deleteDownloadsCheckbox = document.getElementById('deleteDownloadsCheckbox');
+        const uninstallDownloadPathContainer = document.getElementById('uninstall-download-path-container');
+        const uninstallDownloadPathInput = document.getElementById('uninstallDownloadPathInput');
+        const generateUninstallBtn = document.getElementById('generateUninstallBtn');
+        const uninstallOutputContainer = document.getElementById('uninstall-output-container');
+        const uninstallScriptOutput = document.getElementById('uninstallScriptOutput');
+        const copyUninstallBtn = document.getElementById('copyUninstallBtn');
+
+        const uninstallScriptTemplate = `# --- НАСТРОЙКИ УДАЛЕНИЯ ---
+$appInstallPath = "{{appInstallPath}}"
+{{downloadPathSetup}}
+
+# --- ИСПОЛНЕНИЕ СКРИПТА ---
+Write-Host "ВНИМАНИЕ: Этот скрипт удалит указанные папки и всё их содержимое БЕЗВОЗВРАТНО." -ForegroundColor Red
+Read-Host "Нажмите Enter для продолжения или Ctrl+C для отмены."
+
+function Remove-Folder([string]$Path, [string]$FolderDescription) {
+    if (Test-Path -Path $Path) {
+        Write-Host "Удаление папки ($FolderDescription): $Path" -ForegroundColor Yellow
+        try {
+            Remove-Item -Path $Path -Recurse -Force -ErrorAction Stop
+            Write-Host "Папка успешно удалена." -ForegroundColor Green
+        } catch {
+            Write-Error "Не удалось удалить папку: $_"
+        }
+    } else {
+        Write-Host "Папка ($FolderDescription) не найдена: $Path" -ForegroundColor Gray
+    }
+}
+
+Remove-Folder -Path $appInstallPath -FolderDescription "с утилитами"
+{{downloadPathRemove}}
+Write-Host "Очистка завершена."
+Write-Host "" # Добавляем пустую строку в конце для чистого завершения`;
+
+        function generateUninstallScript() {
+            const appPath = uninstallAppPathInput.value.trim() || "$HOME\\Downloads\\VK_Tools";
+            let downloadPathSetup = '';
+            let downloadPathRemove = '';
+
+            if (deleteDownloadsCheckbox.checked) {
+                const downloadPath = uninstallDownloadPathInput.value.trim() || "$HOME\\Videos\\VK_Downloads";
+                downloadPathSetup = `$downloadPath = "${downloadPath}"`;
+                downloadPathRemove = `Remove-Folder -Path $downloadPath -FolderDescription "с медиафайлами"`;
+            }
+
+            const generatedScript = uninstallScriptTemplate
+                .replace('{{appInstallPath}}', appPath)
+                .replace('{{downloadPathSetup}}', downloadPathSetup)
+                .replace('{{downloadPathRemove}}', downloadPathRemove);
+
+            uninstallScriptOutput.textContent = generatedScript;
+            uninstallOutputContainer.classList.remove('hidden');
+        }
+
+        deleteDownloadsCheckbox.addEventListener('change', () => {
+            uninstallDownloadPathContainer.classList.toggle('hidden', !deleteDownloadsCheckbox.checked);
+            generateUninstallScript();
+        });
+        
+        generateUninstallBtn.addEventListener('click', generateUninstallScript);
+        uninstallAppPathInput.addEventListener('input', generateUninstallScript);
+        uninstallDownloadPathInput.addEventListener('input', generateUninstallScript);
+        copyUninstallBtn.addEventListener('click', () => copyToClipboard(uninstallScriptOutput.textContent, copyUninstallBtn));
+        
+        // --- ОБЩАЯ ФУНКЦИЯ КОПИРОВАНИЯ ---
+        function copyToClipboard(text, buttonElement) {
             const textarea = document.createElement('textarea');
-            textarea.value = scriptOutput.textContent;
+            textarea.value = text;
             document.body.appendChild(textarea);
             textarea.select();
             try {
                 document.execCommand('copy');
-                copyBtn.textContent = 'Скопировано!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Копировать';
-                }, 2000);
+                buttonElement.textContent = 'Скопировано!';
+                setTimeout(() => { buttonElement.textContent = 'Копировать'; }, 2000);
             } catch (err) {
                 console.error('Не удалось скопировать текст: ', err);
             }
             document.body.removeChild(textarea);
-        });
+        }
 
-        // Инициализация при загрузке
+        // --- ИНИЦИАЛИЗАЦИЯ ---
         handleFormatChange();
-
+        generateUninstallScript();
+        switchTab('download'); // По умолчанию открыта вкладка скачивания
     </script>
 </body>
 </html>
