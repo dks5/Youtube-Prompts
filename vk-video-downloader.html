@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Инструкция по скачиванию видео с VK</title>
+    <title>Инструкция по скачиванию видео и аудио с VK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -44,46 +44,69 @@
             white-space: pre-wrap;
             word-break: break-word;
         }
+        .radio-label {
+            background-color: #374151;
+            cursor: pointer;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        input[type="radio"]:checked + .radio-label {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #60a5fa;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <!-- Изменены отступы для лучшего отображения на мобильных устройствах -->
     <div class="container w-full mx-auto bg-gray-900 rounded-2xl shadow-lg p-6 sm:p-8">
         <div class="text-center mb-8">
-            <!-- Адаптивный размер заголовка -->
-            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Интерактивная инструкция по скачиванию видео с VK</h1>
-            <p class="text-gray-400 max-w-2xl mx-auto">Эта страница поможет вам создать готовую команду для скачивания видео с VK (ВКонтакте) с помощью PowerShell. Не нужно устанавливать сложные программы — просто настройте параметры, скопируйте команду и выполните её.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-2">Инструкция по скачиванию видео и аудио с VK</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto">Эта страница поможет вам создать готовую команду для скачивания медиафайлов с VK (ВКонтакте) с помощью PowerShell. Просто настройте параметры ниже.</p>
         </div>
 
-        <!-- Поля для ввода -->
         <div class="space-y-6">
             <div>
-                <label for="appPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 1: Укажите путь для утилиты yt-dlp.exe</label>
+                <label for="appPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 1: Путь для утилит (yt-dlp и FFmpeg)</label>
                 <input type="text" id="appPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Downloads">
-                <p class="text-xs text-gray-500 mt-1">Это папка, куда будет скачана сама программа для загрузки. Рекомендуем оставить по умолчанию.</p>
             </div>
             <div>
-                <label for="videoPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 2: Укажите путь для сохранения видео</label>
+                <label for="videoPathInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 2: Путь для сохранения файла</label>
                 <input type="text" id="videoPathInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="$HOME\Videos">
-                 <p class="text-xs text-gray-500 mt-1">Папка, куда будут сохраняться скачанные видеофайлы.</p>
             </div>
             <div>
-                <label for="videoUrlInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 3: Вставьте URL видео</label>
+                <label for="videoUrlInput" class="block mb-2 text-sm font-medium text-gray-300">Шаг 3: URL медиафайла</label>
                 <input type="text" id="videoUrlInput" class="input-field w-full p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="https://vkvideo.ru/video-173445146_456239065">
-                <p class="text-xs text-gray-500 mt-1">Ссылка на видео из VK, которое вы хотите скачать.</p>
+            </div>
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-300">Шаг 4: Выберите формат</label>
+                <div class="flex justify-center space-x-4 mt-2">
+                    <div class="flex items-center">
+                        <input type="radio" id="formatVideo" name="downloadFormat" value="video" class="hidden" checked>
+                        <label for="formatVideo" class="radio-label font-medium">Видео (MP4)</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="formatAudio" name="downloadFormat" value="audio" class="hidden">
+                        <label for="formatAudio" class="radio-label font-medium">Аудио (MP3)</label>
+                    </div>
+                </div>
+            </div>
+             <div id="ffmpeg-note" class="hidden text-center bg-gray-800 p-3 rounded-lg">
+                <p class="text-xs text-gray-400">
+                    <strong>Примечание:</strong> Для извлечения аудио в MP3 требуется дополнительная утилита <strong>FFmpeg</strong>.
+                    Скрипт автоматически скачает и настроит её, если она не установлена.
+                </p>
             </div>
         </div>
 
-        <!-- Кнопка генерации -->
         <div class="mt-8 text-center">
-             <!-- Адаптивные размеры кнопки -->
             <button id="generateBtn" class="btn btn-primary text-white font-bold py-3 px-6 sm:px-8 rounded-lg shadow-md">
                 Создать команду
             </button>
         </div>
 
-        <!-- Область вывода скрипта -->
         <div id="output-container" class="mt-8 hidden">
              <div class="flex justify-between items-center mb-2">
                 <h2 class="text-lg sm:text-xl font-semibold text-white">Ваша готовая команда:</h2>
@@ -92,7 +115,7 @@
                 </button>
              </div>
             <pre class="rounded-lg p-4 text-sm"><code id="scriptOutput" class="language-powershell"></code></pre>
-            <p class="text-xs text-gray-500 mt-2">Скопируйте этот код, вставьте в окно PowerShell (можно найти через меню "Пуск") и нажмите Enter.</p>
+            <p class="text-xs text-gray-500 mt-2">Скопируйте этот код, вставьте в окно PowerShell и нажмите Enter.</p>
         </div>
     </div>
 
@@ -104,55 +127,147 @@
         const copyBtn = document.getElementById('copyBtn');
         const scriptOutput = document.getElementById('scriptOutput');
         const outputContainer = document.getElementById('output-container');
+        const formatRadios = document.querySelectorAll('input[name="downloadFormat"]');
+        const ffmpegNote = document.getElementById('ffmpeg-note');
 
-        const scriptTemplate = `# --- НАСТРОЙКИ ---
+        const scriptTemplate = `# --- УЛУЧШЕННАЯ ФУНКЦИЯ ДЛЯ СКАЧИВАНИЯ С ПРОГРЕСС-БАРОМ ---
+function Start-CustomDownload {
+    param(
+        [string]$Uri,
+        [string]$OutFile
+    )
+    
+    $webClient = New-Object System.Net.WebClient
+    
+    $scriptBlock = {
+        param($sender, $e)
+        
+        $totalMB = if ($e.TotalBytesToReceive -gt 0) { [math]::Round($e.TotalBytesToReceive / 1MB, 2) } else { 0 }
+        $receivedMB = [math]::Round($e.BytesReceived / 1MB, 2)
+        $remainingMB = if ($totalMB -gt 0) { $totalMB - $receivedMB } else { 0 }
+        
+        $status = "Скачано {0:N2} MB / {1:N2} MB (Осталось: {2:N2} MB)" -f $receivedMB, $totalMB, $remainingMB
+        
+        Write-Progress -Activity "Скачивание $(Split-Path $OutFile -Leaf)" -Status $status -PercentComplete $e.ProgressPercentage
+    }
+    
+    $webClient.add_DownloadProgressChanged($scriptBlock)
+    
+    try {
+        $webClient.DownloadFile($Uri, $OutFile)
+        Write-Progress -Activity "Скачивание $(Split-Path $OutFile -Leaf)" -Completed
+    } catch {
+        Write-Error "Ошибка при скачивании файла: $_"
+    } finally {
+        $webClient.Dispose()
+    }
+}
+
+# --- НАСТРОЙКИ ---
 $appInstallPath = "{{appInstallPath}}"
-$videoDownloadPath = "{{videoDownloadPath}}"
-$videoUrl = "{{videoUrl}}"
+$downloadPath = "{{downloadPath}}"
+$mediaUrl = "{{mediaUrl}}"
 
 # --- ИСПОЛНЕНИЕ СКРИПТА ---
+# 1. Проверка и создание папок
 Write-Host "Проверка целевых папок..." -ForegroundColor Green
-if (-not (Test-Path -Path $appInstallPath)) { Write-Host "Создаю папку для приложения: $appInstallPath"; New-Item -ItemType Directory -Path $appInstallPath | Out-Null }
-if (-not (Test-Path -Path $videoDownloadPath)) { Write-Host "Создаю папку для видео: $videoDownloadPath"; New-Item -ItemType Directory -Path $videoDownloadPath | Out-Null }
+if (-not (Test-Path -Path $appInstallPath)) { Write-Host "Создаю папку для утилит: $appInstallPath"; New-Item -ItemType Directory -Path $appInstallPath | Out-Null }
+if (-not (Test-Path -Path $downloadPath)) { Write-Host "Создаю папку для медиа: $downloadPath"; New-Item -ItemType Directory -Path $downloadPath | Out-Null }
 
+# 2. Установка yt-dlp
 $ytDlpFullPath = Join-Path -Path $appInstallPath -ChildPath "yt-dlp.exe"
-$ytDlpUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
-
 if (-not (Test-Path -Path $ytDlpFullPath)) {
-    Write-Host "yt-dlp.exe не найден. Начинаю скачивание в '$appInstallPath'..." -ForegroundColor Yellow
-    Invoke-WebRequest -Uri $ytDlpUrl -OutFile $ytDlpFullPath
+    Write-Host "yt-dlp.exe не найден. Начинаю скачивание..." -ForegroundColor Yellow
+    Start-CustomDownload -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile $ytDlpFullPath
     Write-Host "Скачивание yt-dlp.exe успешно завершено." -ForegroundColor Green
 } else {
     Write-Host "yt-dlp.exe уже существует. Скачивание пропущено." -ForegroundColor Cyan
 }
 
+# 3. Установка FFmpeg (если нужно)
+{{ffmpegSetup}}
+
+# 4. Скачивание медиафайла
 Write-Host "--------------------------------------------------------"
-Write-Host "Начинаю скачивание видео: $videoUrl" -ForegroundColor Cyan
-Write-Host "Видео будет сохранено в: $videoDownloadPath" -ForegroundColor Cyan
+Write-Host "Начинаю скачивание: $mediaUrl" -ForegroundColor Cyan
+Write-Host "Файл будет сохранен в: $downloadPath" -ForegroundColor Cyan
 Write-Host "--------------------------------------------------------"
 
-& $ytDlpFullPath -P $videoDownloadPath $videoUrl
+{{commandLine}}
 
 Write-Host "--------------------------------------------------------"
-Write-Host "Готово! Проверьте файл в папке '$videoDownloadPath'." -ForegroundColor Green
+Write-Host "Готово! Проверьте файл (mp4 или mp3) в папке '$downloadPath'." -ForegroundColor Green
 `;
 
+        const ffmpegTemplate = `
+$ffmpegFullPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg.exe"
+if (-not (Test-Path -Path $ffmpegFullPath)) {
+    Write-Host "FFmpeg не найден. Он необходим для конвертации в MP3." -ForegroundColor Yellow
+    Write-Host "Начинаю автоматическую установку FFmpeg..." -ForegroundColor Yellow
+    
+    $ffmpegZipUrl = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip"
+    $ffmpegZipPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg.zip"
+    Write-Host "Скачиваю FFmpeg с $ffmpegZipUrl..."
+    Start-CustomDownload -Uri $ffmpegZipUrl -OutFile $ffmpegZipPath
+    
+    $ffmpegExtractPath = Join-Path -Path $appInstallPath -ChildPath "ffmpeg_extracted"
+    Write-Host "Распаковываю архив..."
+    Expand-Archive -Path $ffmpegZipPath -DestinationPath $ffmpegExtractPath -Force
+    
+    $binPath = (Get-ChildItem -Path $ffmpegExtractPath -Directory).FullName | Select-Object -First 1
+    $binPath = Join-Path -Path $binPath -ChildPath "bin"
+    Write-Host "Перемещаю ffmpeg.exe и ffprobe.exe в $appInstallPath..."
+    Get-ChildItem -Path $binPath -Filter *.exe | Move-Item -Destination $appInstallPath
+    
+    Write-Host "Очистка временных файлов..."
+    Remove-Item -Path $ffmpegZipPath -Force
+    Remove-Item -Path $ffmpegExtractPath -Recurse -Force
+    
+    Write-Host "Установка FFmpeg успешно завершена." -ForegroundColor Green
+} else {
+    Write-Host "FFmpeg уже существует. Установка пропущена." -ForegroundColor Cyan
+}
+`;
+        
         function generateScript() {
-            // Используем значения по умолчанию, если поля пустые
             const appPath = appPathInput.value.trim() || "$HOME\\Downloads";
-            const videoPath = videoPathInput.value.trim() || "$HOME\\Videos";
-            const videoUrl = videoUrlInput.value.trim() || "https://vkvideo.ru/video-173445146_456239065";
+            const downloadPath = videoPathInput.value.trim() || "$HOME\\Videos";
+            const mediaUrl = videoUrlInput.value.trim() || "https://vkvideo.ru/video-173445146_456239065";
+            const selectedFormat = document.querySelector('input[name="downloadFormat"]:checked').value;
+
+            let commandLine = '';
+            let ffmpegSetup = '';
+            
+            if (selectedFormat === 'audio') {
+                ffmpegSetup = ffmpegTemplate;
+                commandLine = `& $ytDlpFullPath -x --audio-format mp3 -P $downloadPath $mediaUrl`;
+            } else {
+                commandLine = `& $ytDlpFullPath -P $downloadPath $mediaUrl`;
+            }
 
             const generatedScript = scriptTemplate
                 .replace('{{appInstallPath}}', appPath)
-                .replace('{{videoDownloadPath}}', videoPath)
-                .replace('{{videoUrl}}', videoUrl);
+                .replace('{{downloadPath}}', downloadPath)
+                .replace('{{mediaUrl}}', mediaUrl)
+                .replace('{{ffmpegSetup}}', ffmpegSetup)
+                .replace('{{commandLine}}', commandLine);
 
             scriptOutput.textContent = generatedScript;
             outputContainer.classList.remove('hidden');
         }
         
+        function handleFormatChange() {
+            const selectedFormat = document.querySelector('input[name="downloadFormat"]:checked').value;
+            if (selectedFormat === 'audio') {
+                ffmpegNote.classList.remove('hidden');
+            } else {
+                ffmpegNote.classList.add('hidden');
+            }
+            generateScript();
+        }
+
         generateBtn.addEventListener('click', generateScript);
+        formatRadios.forEach(radio => radio.addEventListener('change', handleFormatChange));
 
         copyBtn.addEventListener('click', () => {
             const textarea = document.createElement('textarea');
@@ -171,8 +286,8 @@ Write-Host "Готово! Проверьте файл в папке '$videoDownl
             document.body.removeChild(textarea);
         });
 
-        // Генерируем команду с данными по умолчанию при первой загрузке
-        generateScript();
+        // Инициализация при загрузке
+        handleFormatChange();
 
     </script>
 </body>
